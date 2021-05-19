@@ -1,0 +1,42 @@
+CREATE GATEWAY (POST):
+----------------------
+http://localhost:8080/api/gateways
+
+{
+  "name": "Test Gateway 1",
+  "ipv4Address": "192.168.2.1",
+  "devices": [
+    {
+      "vendor": "Test Vendor 1",
+      "status": "ONLINE"
+    },
+    {
+      "vendor": "Test Vendor 2",
+      "status": "ONLINE"
+    }
+  ]
+}
+
+GET ALL GATEWAYS (GET):
+-----------------------
+http://localhost:8080/api/gateways
+
+
+GET GATEWAY DETAILS (GET):
+--------------------------
+http://localhost:8080/api/gateways/8dd5f315-9788-4d00-87bb-10eed9eff501
+
+ADD DEVICE TO GATEWAY (POST):
+-----------------------------
+http://localhost:8080/api/gateways/8dd5f315-9788-4d00-87bb-10eed9eff501/devices
+
+{
+  "vendor": "Test Vendor 3",
+  "status": "ONLINE"
+}
+
+REMOVE DEVICE FROM GATEWAY (DELETE):
+------------------------------------
+http://localhost:8080/api/gateways/8dd5f315-9788-4d00-87bb-10eed9eff501/devices/1
+
+
