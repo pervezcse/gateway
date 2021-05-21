@@ -5,7 +5,7 @@ Build tool: maven (prerequisite to build)\
 Framework: Spring Boot\
 DB: h2\
 Unit test: JUnit\
-IDE: IntelliJ IDEA\
+IDE: IntelliJ IDEA
 
 How to perform Unit Tests and build the Jar
 ===========================================
