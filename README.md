@@ -7,13 +7,18 @@ DB: h2
 Unit test: JUnit
 IDE: IntelliJ IDEA
 
-How to Build
-============
-go to the project folder
-run following command: mvn clean package
+How to run Unit Tests and Build the Jar
+=======================================
+go to the project folder run following command: 
+mvn clean package
 
-How to Run
-==========
+How to run Integration Tests
+=============================
+go to the project folder run following command:
+mvn failsafe:integration-test
+
+How to Run the Jar
+==================
 java -jar target/gateway-0.0.1-SNAPSHOT.jar
 
 Automatic Test Data Import

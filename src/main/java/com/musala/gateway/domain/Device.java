@@ -2,6 +2,7 @@ package com.musala.gateway.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.musala.gateway.domain.enumeration.DeviceStatus;
+import com.musala.gateway.utils.BeanValidator;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -38,6 +39,10 @@ public class Device {
 
     public Device() {
 
+    }
+
+    public void validate() {
+        BeanValidator.validate(this);
     }
 
     public Long getId() {

@@ -4,8 +4,6 @@ import com.musala.gateway.domain.Device;
 import com.musala.gateway.domain.Gateway;
 import com.musala.gateway.service.GatewayService;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +18,7 @@ public class GatewayResource {
     }
 
     @PostMapping("/gateways")
-    public Gateway createGateway(@Valid @RequestBody Gateway gateway) {
+    public Gateway createGateway(@RequestBody Gateway gateway) {
         return gatewayService.createGateway(gateway);
     }
 
@@ -35,7 +33,7 @@ public class GatewayResource {
     }
 
     @PostMapping("/gateways/{id}/devices")
-    public Device addDeviceToGateway(@PathVariable UUID id, @Valid @RequestBody Device device) {
+    public Device addDeviceToGateway(@PathVariable UUID id, @RequestBody Device device) {
         return gatewayService.addDeviceToGateway(id, device);
     }
 

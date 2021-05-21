@@ -4,7 +4,6 @@ import com.musala.gateway.domain.Device;
 import com.musala.gateway.domain.Gateway;
 import com.musala.gateway.domain.enumeration.DeviceStatus;
 import com.musala.gateway.exception.DeviceNotFoundException;
-import com.musala.gateway.exception.MaxAllowedDeviceException;
 import com.musala.gateway.repository.DeviceRepository;
 import com.musala.gateway.repository.GatewayRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.validation.ConstraintViolationException;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 @ExtendWith(MockitoExtension.class)
-public class GatewayServiceUnitTest {
+public class GatewayServiceTest {
 
     private GatewayService gatewayService;
     @Mock
@@ -43,10 +43,10 @@ public class GatewayServiceUnitTest {
         gatewayWithMultipleDevices = new Gateway(UUID.fromString("8dd5f315-9788-4d00-87bb-10eed9eff501"), "name 1", "192.168.0.1", null);
         Device device1 = new Device(1L, "vendor 1", gatewayWithMultipleDevices, DeviceStatus.ONLINE, currentDateTime);
         Device device2 = new Device(2L, "vendor 2", gatewayWithMultipleDevices, DeviceStatus.ONLINE, currentDateTime);
-        gatewayWithMultipleDevices.setDevices(Arrays.asList(device1, device2));
+        gatewayWithMultipleDevices.setDevices(new ArrayList<>(Arrays.asList(device1, device2)));
         gatewayWithSingleDevice = new Gateway(UUID.fromString("8dd5f315-9788-4d00-87bb-10eed9eff502"), "name 2", "192.168.0.2", null);
         Device device3 = new Device(3L, "vendor 3", gatewayWithSingleDevice, DeviceStatus.ONLINE, currentDateTime);
-        gatewayWithSingleDevice.setDevices(Collections.singletonList(device3));
+        gatewayWithSingleDevice.setDevices(new ArrayList<>(Arrays.asList(device3)));
         gatewayWithNoDevice = new Gateway(UUID.fromString("8dd5f315-9788-4d00-87bb-10eed9eff503"), "name 3", "192.168.0.3", null);
         device = new Device(4L, "vendor 4", gatewayWithMultipleDevices, DeviceStatus.ONLINE, currentDateTime);
 
@@ -58,8 +58,8 @@ public class GatewayServiceUnitTest {
         Device device8 = new Device(null, "vendor 8", gatewayWithMaxDevices, DeviceStatus.ONLINE, currentDateTime);
         Device device9 = new Device(null, "vendor 9", gatewayWithMaxDevices, DeviceStatus.ONLINE, currentDateTime);
         Device device10 = new Device(null, "vendor 10", gatewayWithMaxDevices, DeviceStatus.ONLINE, currentDateTime);
-        gatewayWithMaxDevices.setDevices(Arrays.asList(device1, device2, device3, device4, device5,
-                device6, device7, device8, device9, device10));
+        gatewayWithMaxDevices.setDevices(new ArrayList<>(Arrays.asList(device1, device2, device3, device4, device5,
+                device6, device7, device8, device9, device10)));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class GatewayServiceUnitTest {
     }
 
     @Test
-    void givenValidGatewayWithMoreThan10Devices_whenCreateGateway_thenMaxAllowedDeviceException() {
+    void givenValidGatewayWithMoreThan10Devices_whenCreateGateway_thenMaxAllowedDeviceExceptionThrown() {
         Gateway gatewayToCreate = new Gateway(null, "name 1", "192.168.0.1", null);
         Device device1 = new Device(null, "vendor 1", gatewayToCreate, DeviceStatus.ONLINE, currentDateTime);
         Device device2 = new Device(null, "vendor 2", gatewayToCreate, DeviceStatus.ONLINE, currentDateTime);
@@ -94,7 +94,7 @@ public class GatewayServiceUnitTest {
         gatewayToCreate.setDevices(Arrays.asList(device1, device2, device3, device4, device5,
                 device6, device7, device8, device9, device10, device11));
 
-        assertThrows(MaxAllowedDeviceException.class, () -> gatewayService.createGateway(gatewayToCreate));
+        assertThrows(ConstraintViolationException.class, () -> gatewayService.createGateway(gatewayToCreate));
     }
 
     @Test
@@ -114,16 +114,16 @@ public class GatewayServiceUnitTest {
     }
 
     @Test
-    void givenValidGatewayWithMaxDevices_whenAddDeviceToGateway_thenNewDeviceIsAddedToGateway() {
+    void givenValidGatewayWithMaxDevices_whenAddDeviceToGateway_thenMaxAllowedDeviceExceptionThrown() {
         UUID uuid1 = gatewayWithMaxDevices.getId();
         Device device1 = new Device(null, "vendor 11", null, DeviceStatus.ONLINE, currentDateTime);
         when(gatewayRepository.findById(uuid1)).thenReturn(Optional.of(gatewayWithMaxDevices));
 
-        assertThrows(MaxAllowedDeviceException.class, () -> gatewayService.addDeviceToGateway(uuid1, device1));
+        assertThrows(ConstraintViolationException.class, () -> gatewayService.addDeviceToGateway(uuid1, device1));
     }
 
     @Test
-    void givenValidGatewayWithNoDevices_whenAddDeviceToGateway_thenNewDeviceIsAddedToGateway() {
+    void givenValidGatewayWithNoDevices_whenRemoveDeviceToGateway_thenDeviceNotFoundExceptionThrown() {
         UUID uuid1 = gatewayWithNoDevice.getId();
         Long deviceId = 1L;
         when(gatewayRepository.findById(uuid1)).thenReturn(Optional.of(gatewayWithNoDevice));

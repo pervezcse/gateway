@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @ControllerAdvice
@@ -34,21 +37,31 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
     }
 
-    @ExceptionHandler({GatewayNotFoundException.class, DeviceNotFoundException.class})
+    @ExceptionHandler(GatewayNotFoundException.class)
     public ResponseEntity<Object> handleGatewayNotFoundException(GatewayNotFoundException ex) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "error occurred");
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler(MaxAllowedDeviceException.class)
-    public ResponseEntity<Object> handleMaxAllowedDeviceException(MaxAllowedDeviceException ex) {
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "error occurred");
+    @ExceptionHandler(DeviceNotFoundException.class)
+    public ResponseEntity<Object> handleDeviceNotFoundException(DeviceNotFoundException ex) {
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+        List<String> errors = new ArrayList<>();
+        for (ConstraintViolation error : ex.getConstraintViolations()) {
+            errors.add(error.getPropertyPath().toString() + ": " + error.getMessage());
+        }
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "validation error", errors);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAll(Exception ex) {
-        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
+        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -58,18 +71,18 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
         private String message;
         private List<String> errors;
 
+        public ApiError(HttpStatus status, String message) {
+            super();
+            this.status = status;
+            this.message = message;
+            this.errors = Collections.emptyList();
+        }
+
         public ApiError(HttpStatus status, String message, List<String> errors) {
             super();
             this.status = status;
             this.message = message;
             this.errors = errors;
-        }
-
-        public ApiError(HttpStatus status, String message, String error) {
-            super();
-            this.status = status;
-            this.message = message;
-            errors = Arrays.asList(error);
         }
 
         public HttpStatus getStatus() {

@@ -2,14 +2,12 @@ package com.musala.gateway.service;
 
 import com.musala.gateway.exception.DeviceNotFoundException;
 import com.musala.gateway.exception.GatewayNotFoundException;
-import com.musala.gateway.exception.MaxAllowedDeviceException;
 import com.musala.gateway.domain.Device;
 import com.musala.gateway.domain.Gateway;
 import com.musala.gateway.repository.DeviceRepository;
 import com.musala.gateway.repository.GatewayRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +15,7 @@ import java.util.UUID;
 @Service
 public class GatewayService {
 
-    private static final int MAX_ALLOWED_DEVICE_COUNT = 10;
+
     private final GatewayRepository gatewayRepository;
     private final DeviceRepository deviceRepository;
 
@@ -31,10 +29,8 @@ public class GatewayService {
     }
 
     public Gateway createGateway(Gateway gateway) {
+        gateway.validate();
         if (!CollectionUtils.isEmpty(gateway.getDevices())) {
-            if (gateway.getDevices().size() > MAX_ALLOWED_DEVICE_COUNT) {
-                throw new MaxAllowedDeviceException(MAX_ALLOWED_DEVICE_COUNT);
-            }
             for (Device device : gateway.getDevices()) {
                 device.setGateway(gateway);
                 device.setCreationDateTime(ZonedDateTime.now());
@@ -49,11 +45,12 @@ public class GatewayService {
     }
 
     public Device addDeviceToGateway(UUID gatewayId, Device device) {
+        device.validate();
         Gateway gateway = gatewayRepository.findById(gatewayId)
                 .orElseThrow(() -> new GatewayNotFoundException(gatewayId));
-        if(gateway.getDevices().size() == MAX_ALLOWED_DEVICE_COUNT) {
-            throw new MaxAllowedDeviceException(MAX_ALLOWED_DEVICE_COUNT);
-        }
+        gateway.getDevices().size();
+        gateway.getDevices().add(device);
+        gateway.validate();
         device.setGateway(gateway);
         device.setCreationDateTime(ZonedDateTime.now());
         return deviceRepository.save(device);
