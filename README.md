@@ -7,17 +7,17 @@ DB: h2\
 Unit test: JUnit\
 IDE: IntelliJ IDEA\
 
-How to run Unit Tests and Build the Jar
-=======================================
+How to perform Unit Tests and Build the Jar
+===========================================
 go to the project folder run following command:\
 mvn clean package
 
-How to run Integration Tests
-=============================
+How to perform Integration Tests
+================================
 go to the project folder run following command:\
 mvn failsafe:integration-test
 
-How to Run the Jar
+How to run the Jar
 ==================
 java -jar target/gateway-0.0.1-SNAPSHOT.jar
 
