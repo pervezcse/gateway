@@ -7,7 +7,7 @@ DB: h2\
 Unit test: JUnit\
 IDE: IntelliJ IDEA\
 
-How to perform Unit Tests and Build the Jar
+How to perform Unit Tests and build the Jar
 ===========================================
 go to the project folder run following command:\
 mvn clean package
