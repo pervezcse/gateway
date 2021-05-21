@@ -1,20 +1,20 @@
 Technologies
 ============
-Language: Java 8 (prerequisite to build)
-Build tool: maven (prerequisite to build)
-Framework: Spring Boot
-DB: h2
-Unit test: JUnit
-IDE: IntelliJ IDEA
+Language: Java 8 (prerequisite to build)\
+Build tool: maven (prerequisite to build)\
+Framework: Spring Boot\
+DB: h2\
+Unit test: JUnit\
+IDE: IntelliJ IDEA\
 
 How to run Unit Tests and Build the Jar
 =======================================
-go to the project folder run following command: 
+go to the project folder run following command:\
 mvn clean package
 
 How to run Integration Tests
 =============================
-go to the project folder run following command:
+go to the project folder run following command:\
 mvn failsafe:integration-test
 
 How to Run the Jar
@@ -23,7 +23,7 @@ java -jar target/gateway-0.0.1-SNAPSHOT.jar
 
 Automatic Test Data Import
 ==========================
-data.sql: This file can be found in src/main/resources 
+data.sql: This file can be found in src/main/resources \
 It contains test data which'll be automatically populated in db when the jar is executed
 
 Sample Requests
