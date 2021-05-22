@@ -8,6 +8,7 @@ import com.musala.gateway.repository.DeviceRepository;
 import com.musala.gateway.repository.GatewayRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +43,12 @@ public class GatewayService {
     public Gateway getGatewayDetailsById(UUID id) {
         return gatewayRepository.findById(id)
                 .orElseThrow(() -> new GatewayNotFoundException(id));
+    }
+
+    public void deleteGateway(UUID gatewayId) {
+        Gateway gatewayToDelete = gatewayRepository.findById(gatewayId)
+                .orElseThrow(() -> new GatewayNotFoundException(gatewayId));
+        gatewayRepository.delete(gatewayToDelete);
     }
 
     public Device addDeviceToGateway(UUID gatewayId, Device device) {

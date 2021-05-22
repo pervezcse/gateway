@@ -1,9 +1,10 @@
 Technologies
 ============
 Language: Java 8 (prerequisite to build)\
-Build tool: maven (prerequisite to build)\
-Framework: Spring Boot\
+Backend: Spring Boot\
 DB: h2\
+Automated Build Tool: maven (prerequisite to build)\
+UI: React\
 Unit test: JUnit\
 IDE: IntelliJ IDEA
 
@@ -20,6 +21,14 @@ mvn failsafe:integration-test
 How to run the Jar
 ==================
 java -jar target/gateway-0.0.1-SNAPSHOT.jar
+
+Website URL
+===========
+http://localhost:8080
+
+API URL for Gateway resource
+============================
+http://localhost:8080/api/gateways
 
 Automatic Test Data Import
 ==========================

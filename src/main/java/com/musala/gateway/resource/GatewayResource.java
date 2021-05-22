@@ -32,6 +32,11 @@ public class GatewayResource {
         return gatewayService.getGatewayDetailsById(id);
     }
 
+    @DeleteMapping("/gateways/{id}")
+    public void deleteGateway(@PathVariable UUID id) {
+        gatewayService.deleteGateway(id);
+    }
+
     @PostMapping("/gateways/{id}/devices")
     public Device addDeviceToGateway(@PathVariable UUID id, @RequestBody Device device) {
         return gatewayService.addDeviceToGateway(id, device);
