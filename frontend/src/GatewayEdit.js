@@ -75,8 +75,8 @@ class GatewayEdit extends Component {
             item['devices'] = updatedDevices;
             this.setState({item: item, newDeviceVendor: '', newDeviceStatus: 'ONLINE'});
         };
-        const newDevice = {vendor: newDeviceVendor, status: newDeviceStatus};
         if (gatewayId) {
+            const newDevice = {vendor: newDeviceVendor, status: newDeviceStatus};
             await fetch(`/api/gateways/${gatewayId}/devices`, {
                 method: 'POST',
                 headers: {
@@ -93,22 +93,32 @@ class GatewayEdit extends Component {
                 }
             });
         } else {
+            const randomNumber = Math.floor(Math.random() * 10000) + 1 ;
+            const newDevice = {id: randomNumber, vendor: newDeviceVendor, status: newDeviceStatus};
             updateDevicesInState(newDevice);
         }
     }
 
     async removeDevice(gatewayId, deviceId) {
-        await fetch(`/api/gateways/${gatewayId}/devices/${deviceId}`, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then(() => {
+        const updateDevicesInState = () => {
             let updatedDevices = [...this.state.item.devices].filter(i => i.id !== deviceId);
             let item = {...this.state.item};
             item['devices'] = updatedDevices;
-        });
+            this.setState({item: item})
+        };
+        if (gatewayId) {
+            await fetch(`/api/gateways/${gatewayId}/devices/${deviceId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => {
+                updateDevicesInState();
+            });
+        } else {
+            updateDevicesInState();
+        }
     }
 
     handleNewDeviceVendorChange(value) {

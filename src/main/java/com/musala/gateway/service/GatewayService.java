@@ -33,6 +33,7 @@ public class GatewayService {
         gateway.validate();
         if (!CollectionUtils.isEmpty(gateway.getDevices())) {
             for (Device device : gateway.getDevices()) {
+                device.setId(null);
                 device.setGateway(gateway);
                 device.setCreationDateTime(ZonedDateTime.now());
             }
@@ -58,6 +59,7 @@ public class GatewayService {
         gateway.getDevices().size();
         gateway.getDevices().add(device);
         gateway.validate();
+        device.setId(null);
         device.setGateway(gateway);
         device.setCreationDateTime(ZonedDateTime.now());
         return deviceRepository.save(device);
