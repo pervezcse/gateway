@@ -43,7 +43,7 @@ class GatewayList extends Component {
                 <td>{gateway.ipv4Address}</td>
                 <td>
                     <ButtonGroup>
-                        <Button size="sm" color="primary" tag={Link} to={"/gateways/" + gateway.id}>Edit</Button>
+                        <Button size="sm" color="primary" tag={Link} to={"/gateways/" + gateway.id}>Details</Button>
                         <Button size="sm" color="danger" onClick={() => this.remove(gateway.id)}>Delete</Button>
                     </ButtonGroup>
                 </td>
